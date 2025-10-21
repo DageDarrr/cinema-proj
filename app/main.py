@@ -1,14 +1,40 @@
 from fastapi import FastAPI
 import uvicorn
+from app.core.database import db_manager
+from contextlib import asynccontextmanager
+from app.core.logger_config import get_logger
+from app.core.config import settings
+import asyncio
 
 
-app = FastAPI()
+logger = get_logger(__name__)
 
 
-@app.post('/')
+DATABASE_URL = settings.DATABASE_URL
+REDIS_URL = settings.REDIS_URL
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        db_manager.init_db(db_url=DATABASE_URL)
+        logger.info("Создание таблиц")
+        await db_manager.create_tables()
+
+        yield
+
+        await db_manager.close()
+
+    except Exception as e:
+        logger.error(f"Произошла ошибка при старте приложения: {e}")
+
+
+app = FastAPI(lifespan=lifespan)
+
+
+@app.post("/")
 async def hello():
-    return {'message' : 'Ok', 'status' : True}
-
+    return {"message": "Ok", "status": True}
 
 
 # python -m uvicorn app.main:app --reload
