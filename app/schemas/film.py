@@ -9,6 +9,8 @@ class FilmBase(BaseModel):
     description: Optional[str] = Field(
         None, max_length=2000, description="Описание фильма"
     )
+    duration : int = Field(..., gt=0, description="Длительность фильма в секундах")
+
     year: int = Field(
         ..., gt=1900, le=datetime.now().year, description="Год выпуска фильма"
     )
@@ -27,8 +29,9 @@ class FilmUpdate(BaseModel):
     description: Optional[str] = Field(
         None, max_length=2000, description="Описание фильма"
     )
-    year: Optional[int] = Field(None, gt=1900, description="Год выпуска фильма")
-    rating: Optional[float] = Field(None, gt=0, le=10, description="Рейтинг фильма")
+    duration: Optional[int] = Field(None, gt=0, description="Длительность фильма")
+    year: Optional[int] = Field(None, gt=1900, le=datetime.now().year, description="Год выпуска фильма")
+    rating: Optional[float] = Field(None, ge=0, le=10, description="Рейтинг фильма")
 
 
 class FilmResponse(FilmBase):
