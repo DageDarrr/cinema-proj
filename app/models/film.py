@@ -1,7 +1,7 @@
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.models.base import Base
-from app.models.association_tables import film_actor
+from models.base import Base
+from models.association_tables import film_actor
 
 class Film(Base):
     __tablename__ = "films"

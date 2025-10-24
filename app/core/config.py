@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 from pydantic_settings import BaseSettings
-
+from pydantic import computed_field
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = Path(current_dir).parent.parent
@@ -38,10 +38,13 @@ class Settings(BaseSettings):
     REDIS_PASS: str
 
     URL: str
-
+    
+    @computed_field
     @property
     def DATABASE_URL(self) -> str:
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+    
+    
 
     @property
     def REDIS_URL(self) -> str:
@@ -49,3 +52,5 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+

@@ -1,5 +1,5 @@
 from sqlalchemy import Table, Column, ForeignKey
-from app.models.base import Base
+from models.base import Base
 
 
 """"Асоциативная таблица для many to many связи, у каждого актера много фильмов
