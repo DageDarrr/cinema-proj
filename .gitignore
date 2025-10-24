@@ -49,4 +49,4 @@ docker-compose.override.yml
 
 # Alembic
 alembic/versions/
-alembic/alembic.ini
+alembic.ini
