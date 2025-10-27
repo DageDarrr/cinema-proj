@@ -25,6 +25,7 @@ from models.favorites import Favorite
 from models.film import Film
 from models.user import User
 from models.watch_history import WatchHistory
+from models.refresh_token import RefreshToken
 
 target_metadata = Base.metadata
 
