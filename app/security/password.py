@@ -1,7 +1,9 @@
 from passlib.context import CryptContext
 import bcrypt
-
+import hmac
+import hashlib
 from app.core.config import settings
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -26,17 +28,28 @@ def validate_password_strength(password: str) -> str:
 
 
 def get_password_hash(password: str) -> bytes:
-
     validate_password_strength(password=password)
-
-    peppered_password = password + settings.PEPPER_SECRET
-
-    hashed_password = bcrypt.hashpw(
-        peppered_password.encode("utf-8"), bcrypt.gensalt(rounds=settings.BCRYPT_ROUNDS)
+    
+    
+    peppered_password = hmac.new(
+        settings.PEPPER_SECRET.encode("utf-8"),
+        password.encode("utf-8"),
+        hashlib.sha256
+    ).hexdigest()
+    
+    
+    hashed = bcrypt.hashpw(
+        peppered_password.encode("utf-8"),
+        bcrypt.gensalt(rounds=settings.BCRYPT_ROUNDS)
     )
-    return hashed_password
-
+    return hashed
 
 def verify_password(input_password: str, hashed_password: bytes) -> bool:
-    peppered_password = input_password + settings.PEPPER_SECRET
+    
+    peppered_password = hmac.new(
+        settings.PEPPER_SECRET.encode("utf-8"),
+        input_password.encode("utf-8"),
+        hashlib.sha256
+    ).hexdigest()
+    
     return bcrypt.checkpw(peppered_password.encode("utf-8"), hashed_password)

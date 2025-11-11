@@ -1,10 +1,11 @@
 from typing import AsyncGenerator
-
+from app.models.user import User
 import redis
+from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.database import db_manager # redis_manager
+from app.core.database import db_manager  # redis_manager
 
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
@@ -15,3 +16,6 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
 # async def get_redis() -> AsyncGenerator[redis.Redis, None]:
 #     async with redis_manager.get_client() as redis_client:
 #         yield redis_client
+
+
+# async def get_current_user(db : AsyncSession, user_id : int) -> Optional[User]:

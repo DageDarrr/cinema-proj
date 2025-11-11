@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from app.core.logger_config import get_logger
 from app.core.config import settings
 import asyncio
-
+from app.api.v1 import auth_router
 
 logger = get_logger(__name__)
 
@@ -19,6 +19,7 @@ async def lifespan(app: FastAPI):
     try:
         db_manager.init_db(db_url=DATABASE_URL)
         logger.info("Создание таблиц")
+        
         await db_manager.create_tables()
 
         yield
@@ -30,6 +31,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.include_router(router=auth_router)
 
 
 @app.post("/")

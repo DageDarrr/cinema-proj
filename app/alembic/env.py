@@ -13,19 +13,13 @@ config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-if config.config_file_name is not None:
+if config.config_file_name is not None
     fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from models.base import Base
-from models.actor import Actor
-from models.association_tables import film_actor
-from models.favorites import Favorite
-from models.film import Film
-from models.user import User
-from models.watch_history import WatchHistory
-from models.refresh_token import RefreshToken
+from app.models.base import Base
+from app.models import User, Film, Favorite, WatchHistory, RefreshToken, Actor, Genre
 
 target_metadata = Base.metadata
 

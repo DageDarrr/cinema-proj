@@ -1,5 +1,5 @@
 from sqlalchemy import Table, Column, ForeignKey
-from models.base import Base
+from ..base import Base
 
 
 """"Асоциативная таблица для many to many связи, у каждого актера много фильмов
@@ -12,9 +12,8 @@ from models.base import Base
 
 
 film_actor = Table(
-    'film_actor',
+    "film_actor",
     Base.metadata,
-    Column('film_id', ForeignKey('films.id'), primary_key=True),
-    Column('actor_id', ForeignKey('actors.id'), primary_key=True),
-    
+    Column("film_id", ForeignKey("films.id"), primary_key=True),
+    Column("actor_id", ForeignKey("actors.id"), primary_key=True),
 )

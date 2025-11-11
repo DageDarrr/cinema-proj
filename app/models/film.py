@@ -1,7 +1,9 @@
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from models.base import Base
-from models.association_tables import film_actor
+from .base import Base
+from .association_tables.film_actor import film_actor
+from .association_tables.film_genre import film_genre
+
 
 class Film(Base):
     __tablename__ = "films"
@@ -15,8 +17,9 @@ class Film(Base):
 
     favorites: Mapped[list["Favorite"]] = relationship(back_populates="film")
     watch_history: Mapped[list["WatchHistory"]] = relationship(back_populates="film")
-
-    actors : Mapped[list["Actor"]] = relationship(secondary=film_actor, back_populates="films")
-
-
-
+    actors: Mapped[list["Actor"]] = relationship(
+        secondary=film_actor, back_populates="films"
+    )
+    genres: Mapped[list["Genre"]] = relationship(
+        secondary=film_genre, back_populates="films"
+    )

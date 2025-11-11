@@ -1,8 +1,11 @@
 from app.core.config import settings
 from app.core.logger_config import get_logger
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from typing import AsyncGenerator
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator, Optional, Union
+import redis.asyncio as redis
 from app.models.base import Base
+
 
 logger = get_logger(__name__)
 
@@ -72,4 +75,54 @@ class DBManager:
             await session.close()
 
 
+class RedisManager:
+    async def init_redis(self, db_url: str):
+        try:
+            self.redis = redis.from_url(
+                db_url, decode_responses=False, encoding="utf-8"
+            )
+
+            await self.redis.ping()
+            self._db_url = db_url
+            logger.info("Redis успешно запущен")
+
+        except Exception as e:
+            logger.error(f"Произошла ошибка инициализации Redis:{e}")
+
+    async def set(
+        self, key: str, value: Union[str, bytes], expire: Optional[int] = None
+    ):
+        if not self.redis:
+            raise RuntimeError("Вызови init_db() сначала")
+        await self.redis.set(key, value, ex=expire)
+
+    async def get(self, key: str) -> Optional[str]:
+        if not self.redis:
+            raise RuntimeError("Вызови init_db() сначала")
+        return await self.redis.get(key)
+
+    async def delete(self, key: str):
+        if not self.redis:
+            raise RuntimeError("Вызови init_db() сначала")
+        await self.redis.delete(key)
+
+    async def close(self):
+        if self.redis:
+            await self.redis.close()
+            self.redis = None
+            self._database_url = None
+            logger.info("RedisManager закрыт")
+
+    @asynccontextmanager
+    async def get_client(self) -> AsyncGenerator[redis.Redis, None]:
+        if not self.redis:
+            raise RuntimeError("Вызови init_db() сначала")
+
+        try:
+            yield self.redis
+        finally:
+            pass
+
+
 db_manager = DBManager()
+redis_manager = RedisManager()

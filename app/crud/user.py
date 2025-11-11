@@ -84,7 +84,7 @@ class UserCRUD:
                 logger.warning(
                     f"Создание пользователя не удалось: username {user_data.username} уже существует"
                 )
-                raise ValueError("Пользователь с такой почтой уже существует")
+                raise ValueError("Пользователь с таким username уже существует")
 
             hashed_password = get_password_hash(user_data.password)
 
@@ -104,7 +104,7 @@ class UserCRUD:
 
         except Exception as e:
             logger.error(f"Произошла ошибка создания пользователя: {e}")
-            db.rollback()
+            await db.rollback()
             raise
 
     @staticmethod
@@ -199,13 +199,19 @@ class UserCRUD:
                 )
                 return None
 
-            if not await verify_password(
+            if not verify_password(
                 password_change.current_password, db_user.hashed_password
             ):
                 logger.warning(
                     f"Смена пароля не удалась: неверный текущий пароль для пользователя {user_id}"
                 )
                 raise ValueError("Неверный текущий пароль")
+            
+            if verify_password(
+                password_change.new_password, db_user.hashed_password
+            ):
+                raise ValueError("Новый пароль не должен совпадать со старым")
+            
 
             validate_password_strength(password_change.new_password)
             hashed_password = get_password_hash(password_change.new_password)
