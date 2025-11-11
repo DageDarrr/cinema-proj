@@ -17,8 +17,12 @@ class User(Base):
         DateTime(timezone=True), server_default=func.now()
     )
 
-    favorites: Mapped[list["Favorite"]] = relationship("Favorite",back_populates="user")
-    watch_history: Mapped[list["WatchHistory"]] = relationship("WatchHistory",back_populates="user")
-    refresh_tokens: Mapped[list["RefreshToken"]] = relationship("RefreshToken",
-        back_populates="user", cascade="all, delete-orphan"
+    favorites: Mapped[list["Favorite"]] = relationship(
+        "Favorite", back_populates="user"
+    )
+    watch_history: Mapped[list["WatchHistory"]] = relationship(
+        "WatchHistory", back_populates="user"
+    )
+    refresh_tokens: Mapped[list["RefreshToken"]] = relationship(
+        "RefreshToken", back_populates="user", cascade="all, delete-orphan"
     )

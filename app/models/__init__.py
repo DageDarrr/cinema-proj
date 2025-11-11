@@ -8,16 +8,13 @@ from .actor import Actor
 from .genre import Genre
 
 
-
-
 __all__ = [
-    "Base", 
-    "User", 
-    "Film", 
-    "Favorite", 
-    "WatchHistory", 
+    "Base",
+    "User",
+    "Film",
+    "Favorite",
+    "WatchHistory",
     "RefreshToken",
     "Actor",
     "Genre",
-    
 ]

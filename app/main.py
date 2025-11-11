@@ -19,7 +19,7 @@ async def lifespan(app: FastAPI):
     try:
         db_manager.init_db(db_url=DATABASE_URL)
         logger.info("Создание таблиц")
-        
+
         await db_manager.create_tables()
 
         yield

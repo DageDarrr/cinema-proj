@@ -25,23 +25,22 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def get_current_user(
-        access_token : str = Cookie(None, alias="access_token"),
-        db : AsyncSession = Depends(get_db_session),
+    access_token: str = Cookie(None, alias="access_token"),
+    db: AsyncSession = Depends(get_db_session),
+) -> User:
 
-)-> User:
-    
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Требуется аутентификация",
     )
-    
+
     if not access_token:
         raise credentials_exception
-    
+
     auth_service = AuthService()
     user = await auth_service.valid_access_token(db, access_token)
-    
+
     if not user:
         raise credentials_exception
-    
+
     return user

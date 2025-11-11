@@ -206,12 +206,9 @@ class UserCRUD:
                     f"Смена пароля не удалась: неверный текущий пароль для пользователя {user_id}"
                 )
                 raise ValueError("Неверный текущий пароль")
-            
-            if verify_password(
-                password_change.new_password, db_user.hashed_password
-            ):
+
+            if verify_password(password_change.new_password, db_user.hashed_password):
                 raise ValueError("Новый пароль не должен совпадать со старым")
-            
 
             validate_password_strength(password_change.new_password)
             hashed_password = get_password_hash(password_change.new_password)
